@@ -17,4 +17,7 @@ class CustomUserChangeForm(forms.ModelForm):
 
 
 class LoginForm(AuthenticationForm):
-    username = forms.EmailField(label='Email')
+    username = forms.EmailField(
+        widget=forms.EmailInput(attrs={'autocomplete': 'email'}),
+        label='Email'
+    )

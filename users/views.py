@@ -21,10 +21,10 @@ def skills_search(request):
     ).order_by('name').values('id', 'name')[:10]
     return JsonResponse(list(queryset), safe=False)
 
-
+@login_required
 def add_skill(request, pk):
     if request.user.id != pk:
-        return HttpResponseForbidden('У вас нет прав')
+        return JsonResponse({'status': 'You are not owner'})
     data = json.loads(request.body)
     skill_id = data.get('skill_id')
     name = data.get('name', '')
@@ -39,7 +39,7 @@ def add_skill(request, pk):
             defaults={'name': name}
         )
     if request.user.skills.filter(id=skill.id).exists():
-        return JsonResponse({'error': 'Навык уже есть'}, status=400)
+        return JsonResponse({'status': 'Skill already exists'}, status=400)
     request.user.skills.add(skill)
     added = True
     return JsonResponse({

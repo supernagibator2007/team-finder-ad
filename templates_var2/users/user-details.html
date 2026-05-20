@@ -65,7 +65,9 @@
             {% for skill in user.skills.all %}
             <span class="skill-chip" data-id="{{ skill.id }}">
                 {{ skill.name }}
+            {% if request.user == user %}
                 <button type="button" class="remove-skill-btn" aria-label="Удалить" title="Удалить">×</button>
+            {% endif %}
             </span>
             {% endfor %}
             {% if request.user == user %}
