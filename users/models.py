@@ -62,6 +62,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['name', 'surname']
 
     def save(self, *args, **kwargs):
+        if self.avatar:
+            return super().save(*args, **kwargs)
         first_letter = self.name[0].upper()
         bg_color = random.choice([
             (74, 144, 226),
