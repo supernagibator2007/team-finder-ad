@@ -1,15 +1,17 @@
 import json
-from django.shortcuts import redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponseForbidden
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import DetailView, UpdateView, ListView
-from django.urls import reverse
-from django.contrib.auth.views import PasswordChangeView
+
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import PasswordChangeView
+from django.http import HttpResponseForbidden, JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
+from django.views.generic import DetailView, ListView, UpdateView
+from utils.const import COUNT_OF_DISPLAYED
 
-from .models import User, Skill
-from .forms import CustomUserChangeForm
+from .forms import UserChangeForm
+from .models import Skill, User
 
 
 def skills_search(request):
@@ -18,8 +20,9 @@ def skills_search(request):
         return JsonResponse([])
     queryset = Skill.objects.filter(
         name__istartswith=query
-    ).order_by('name').values('id', 'name')[:10]
+    ).order_by('name').values('id', 'name')[:COUNT_OF_DISPLAYED]
     return JsonResponse(list(queryset), safe=False)
+
 
 @login_required
 def add_skill(request, pk):
@@ -28,7 +31,6 @@ def add_skill(request, pk):
     data = json.loads(request.body)
     skill_id = data.get('skill_id')
     name = data.get('name', '')
-    skill = None
     created = False
     added = False
     if skill_id:
@@ -61,7 +63,7 @@ def remove_skill(request, pk, skill_pk):
 
 def logout_view(request):
     logout(request)
-    return redirect('/')
+    return redirect('projects:index')
 
 
 class UserListView(ListView):
@@ -90,7 +92,7 @@ class UserDetailView(DetailView):
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
-    form_class = CustomUserChangeForm
+    form_class = UserChangeForm
     template_name = 'users/edit_profile.html'
 
     def get_object(self, queryset=None):

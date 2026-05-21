@@ -1,34 +1,28 @@
 import io
 import os
 import random
-from django.core.files.base import ContentFile
-from PIL import Image, ImageDraw, ImageFont
-from django.contrib.auth.models import (
-    AbstractBaseUser, BaseUserManager, PermissionsMixin
-)
+
 from django.conf import settings
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.core.files.base import ContentFile
 from django.db import models
+from PIL import Image, ImageDraw, ImageFont
+from utils.const import (MAX_LENGTH_ABOUT, MAX_LENGTH_NAME, MAX_LENGTH_PHONE,
+                         MAX_LENGTH_SKILL)
+
+from .managers import UserManager
 
 
-font_path = os.path.join(settings.BASE_DIR, 'static', 'fonts', 'Neue_Haas_Grotesk_Display_Pro_75_Bold.otf')
-
-
-class UserManager(BaseUserManager):
-    def create_user(self, email, name, surname, password, **kwargs):
-        email = self.normalize_email(email)
-        user = self.model(email=email, name=name, surname=surname, **kwargs)
-        user.set_password(password)
-        user.save()
-        return user
-
-    def create_superuser(self, email, name, surname, password, **kwargs):
-        kwargs.setdefault('is_staff', True)
-        kwargs.setdefault('is_superuser', True)
-        return self.create_user(email, name, surname, password, **kwargs)
+font_path = os.path.join(settings.BASE_DIR, 'static',
+                         'fonts', 'Neue_Haas_Grotesk_Display_Pro_75_Bold.otf')
 
 
 class Skill(models.Model):
-    name = models.CharField(max_length=124)
+    name = models.CharField(max_length=MAX_LENGTH_SKILL, verbose_name='Навык')
+
+    class Meta:
+        verbose_name = 'Навык'
+        verbose_name_plural = 'Навыки'
 
     def __str__(self):
         return self.name
@@ -36,17 +30,26 @@ class Skill(models.Model):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    name = models.CharField(max_length=124, verbose_name='Имя')
-    surname = models.CharField(max_length=124, verbose_name='Фамилия')
+    name = models.CharField(max_length=MAX_LENGTH_NAME, verbose_name='Имя')
+    surname = models.CharField(
+        max_length=MAX_LENGTH_NAME,
+        verbose_name='Фамилия'
+    )
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
     phone = models.CharField(
-        max_length=12, blank=True, null=True, verbose_name='Номер телефона'
+        max_length=MAX_LENGTH_PHONE,
+        blank=True,
+        null=True,
+        verbose_name='Номер телефона'
     )
     github_url = models.URLField(
         blank=True, null=True, verbose_name='Ссылка на профиль GitHub:'
     )
     about = models.TextField(
-        max_length=256, blank=True, null=True, verbose_name='Обо мне'
+        max_length=MAX_LENGTH_ABOUT,
+        blank=True,
+        null=True,
+        verbose_name='Обо мне'
     )
     skills = models.ManyToManyField(
         Skill,
@@ -60,6 +63,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name', 'surname']
+
+    class Meta:
+        verbose_name = 'Эксплуатант'
+        verbose_name_plural = 'Эксплуатанты'
 
     def save(self, *args, **kwargs):
         if self.avatar:

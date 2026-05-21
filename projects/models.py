@@ -1,12 +1,18 @@
 from django.contrib.auth import get_user_model
-from django.urls import reverse
 from django.db import models
+from django.urls import reverse
+from utils.const import (MAX_LENGTH_PROJECT, MAX_LENGTH_STATUS, STATUS_CLOSED,
+                         STATUS_OPENED)
 
 User = get_user_model()
 
+
 class Project(models.Model):
-    STATUS = [("open", "Open"), ("closed", "Closed")]
-    name = models.CharField(max_length=200, verbose_name='Название')
+    STATUS = [(STATUS_OPENED, "Открыт"), (STATUS_CLOSED, "Закрыт")]
+    name = models.CharField(
+        max_length=MAX_LENGTH_PROJECT,
+        verbose_name='Название'
+    )
     description = models.TextField(
         blank=True,
         null=True,
@@ -24,15 +30,24 @@ class Project(models.Model):
         verbose_name='Ссылка на GitHub'
     )
     status = models.CharField(
-        max_length=6,
+        max_length=MAX_LENGTH_STATUS,
         choices=STATUS,
-        verbose_name='Статус'
+        verbose_name='Статус',
+        default=STATUS_CLOSED
     )
     participants = models.ManyToManyField(
         User,
         blank=True,
-        related_name='participated_projects'
+        related_name='participated_projects',
+        verbose_name='Участники'
     )
+
+    class Meta:
+        verbose_name = 'Проект'
+        verbose_name_plural = 'Проекты'
 
     def get_absolute_url(self):
         return reverse("projects:detail", kwargs={"pk": self.pk})
+
+    def __str__(self):
+        return f'{self.name}, автор - {self.owner}'

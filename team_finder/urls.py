@@ -1,10 +1,9 @@
-from django.contrib import admin
-from django.shortcuts import redirect
-from django.urls import path, include, reverse_lazy
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.shortcuts import redirect
+from django.urls import include, path, reverse_lazy
 from django.views.generic import RedirectView
-
 
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name='projects:index')),
