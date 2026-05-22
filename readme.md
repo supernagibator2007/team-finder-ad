@@ -52,6 +52,7 @@ cp .env_example .env
 |-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **DJANGO_SECRET_KEY** | Секретный ключ Django, используемый для подписи cookie и токенов. Можно сгенерировать при помощи `get_random_secret_key` из `django.core.management.utils` |
 | **DJANGO_DEBUG**      | Режим отладки. `True` или `False`                                                                                                                          |
+| **ALLOWED_HOSTS**     | Разрешённые хосты.                                                                                                                                         |
 | **POSTGRES_DB**       | Имя базы данных PostgreSQL, которую будет использовать Django.                                                                                             |
 | **POSTGRES_USER**     | Имя пользователя PostgreSQL.                                                                                                                               |
 | **POSTGRES_PASSWORD** | Пароль пользователя PostgreSQL.                                                                                                                            |
