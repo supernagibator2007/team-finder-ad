@@ -7,10 +7,10 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core.files.base import ContentFile
 from django.db import models
 from PIL import Image, ImageDraw, ImageFont
-from utils.const import (MAX_LENGTH_ABOUT, MAX_LENGTH_NAME, MAX_LENGTH_PHONE,
-                         MAX_LENGTH_SKILL)
 
 from .managers import UserManager
+from utils.const import (MAX_LENGTH_ABOUT, MAX_LENGTH_NAME, MAX_LENGTH_PHONE,
+                         MAX_LENGTH_SKILL)
 
 
 font_path = os.path.join(settings.BASE_DIR, 'static',

@@ -46,8 +46,8 @@ class Project(models.Model):
         verbose_name = 'Проект'
         verbose_name_plural = 'Проекты'
 
-    def get_absolute_url(self):
-        return reverse("projects:detail", kwargs={"pk": self.pk})
-
     def __str__(self):
         return f'{self.name}, автор - {self.owner}'
+
+    def get_absolute_url(self):
+        return reverse("projects:detail", kwargs={"pk": self.pk})

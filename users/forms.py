@@ -1,9 +1,12 @@
+from urllib.parse import urlsplit
+
 from django import forms
 from django.contrib.auth.forms import \
     AuthenticationForm as BaseAuthenticationForm
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 
 from .models import User
+from utils.const import GITHUB_LINK
 
 
 class UserCreateForm(BaseUserCreationForm):
@@ -21,8 +24,8 @@ class UserChangeForm(forms.ModelForm):
         url = self.cleaned_data.get('github_url')
         if not url:
             return url
-        domain = url.split('://')[1][:10]
-        if domain != 'github.com':
+        parsed_url = urlsplit(url)
+        if parsed_url.hostname != GITHUB_LINK:
             raise forms.ValidationError(
                 "Ссылка должна вести на официальный сайт GitHub"
             )
