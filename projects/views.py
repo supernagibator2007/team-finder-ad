@@ -26,8 +26,6 @@ def participate(request, pk):
 
 
 @login_required
-# я не смог сделать через request.POST or None,
-# намекните, пожалуйста, как это реализовать
 @require_http_methods(["POST"])
 def project_complete(request, pk):
     project = get_object_or_404(Project, pk=pk)
